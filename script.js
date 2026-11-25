@@ -1,7 +1,5 @@
 console.log("Hello, JavaScript!");
 
-let n = 1;
-
 const company = document.getElementById("company");
 const position = document.getElementById("position");
 const date = document.getElementById("date");
@@ -9,123 +7,118 @@ const link = document.getElementById("link");
 const status1 = document.getElementById("status");
 const addApplication = document.getElementById("addApplication");
 const addBody = document.getElementById("addBody");
-const sortStatus = document.getElementById("sortStatus");
-const sortDate = document.getElementById("sortDate");
 
 const storageKey = "internshipApplications";
 
-const statusOrder = {
-  Offer: 1,
-  Interviewing: 2,
-  Applied: 3,
-  Rejected: 4
-    /*
-    <option>Applied</option>
-    <option>Interviewing</option>
-    <option>Offer</option>
-    <option>Rejected</option>
-    */
+let applications = JSON.parse(localStorage.getItem(storageKey) || "[]"); //fetch old data or create a new array
+
+const statusOrder = {// encode the status for ranking
+    Offer: 1,
+    Interviewing: 2,
+    Applied: 3,
+    Rejected: 4,
 };
 
-function addRow(application) {
-  const row = addBody.insertRow();
-  row.id = "row" + application.id;
-
-  row.insertCell().textContent = application.company;
-  row.insertCell().textContent = application.position;
-  row.insertCell().textContent = application.date;
-
-  const linkElement = document.createElement("a");
-  linkElement.setAttribute("href", application.link);
-  linkElement.textContent = "Link";
-  row.insertCell().appendChild(linkElement);
-
-  row.insertCell().textContent = application.status1;
-
-  const deleteBtn = document.createElement("button");
-  deleteBtn.type = "button";
-  deleteBtn.id = "deleteBtn" + application.id;
-  deleteBtn.textContent = "delete";
-  row.insertCell().appendChild(deleteBtn);
+function escapeHTML(value) {//prevent user type in html codes
+    return String(value).replace(/[&<>"']/g, function (char) {
+        return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[char];
+    });
 }
 
-function saveApplications() {
-  const applications = Array.from(addBody.rows, function (row) {
-    return {
-      id: Number(row.id.slice("row".length)),
-      company: row.cells[0].textContent,
-      position: row.cells[1].textContent,
-      date: row.cells[2].textContent,
-      link: row.cells[3].querySelector("a").getAttribute("href"),
-      status1: row.cells[4].textContent
-    };
-  });
+function render() {
+    applications = JSON.parse(localStorage.getItem(storageKey) || "[]");
 
-  localStorage.setItem(storageKey, JSON.stringify(applications));
+    addBody.innerHTML = "";
+
+    for (const application of applications) {
+        const row = `
+            <tr id="row${application.id}">
+                <td>${escapeHTML(application.company)}</td>
+                <td>${escapeHTML(application.position)}</td>
+                <td>${escapeHTML(application.date)}</td>
+                <td>${escapeHTML(application.link)}</td>
+                <td>${escapeHTML(application.status1)}</td>
+                <td><button type="button" id="deleteBtn${application.id}">delete</button></td>
+            </tr>
+        `;
+
+        addBody.innerHTML += row;
+    }
 }
 
 addApplication.addEventListener("click", function () {
-  const application = {
-    id: n,
-    company: company.value,
-    position: position.value,
-    date: date.value,
-    link: link.value,
-    status1: status1.value
-  };
+    const application = {
+        id: Math.max(0, ...applications.map(item => item.id)) + 1, //get the largest id + 1 to prevent repeated id
+        company: company.value,
+        position: position.value,
+        date: date.value,
+        link: link.value,
+        status1: status1.value
+    };
 
-  addRow(application);
+    applications.push(application);
 
-  company.value = "";
-  position.value = "";
-  date.value = "";
-  link.value = "";
+    localStorage.setItem(storageKey, JSON.stringify(applications));
 
-  n++;
-  saveApplications();
+    render();
+
+    company.value = "";
+    position.value = "";
+    date.value = "";
+    link.value = "";
 });
 
 addBody.addEventListener("click", function (event) {
-  const button = event.target.closest('button[id^="deleteBtn"]');
+    const button = event.target.closest('button[id^="deleteBtn"]');
 
-  if (button) {
-    const number = button.id.slice("deleteBtn".length);
-    document.getElementById("row" + number).remove();
-    saveApplications();
-  }
+    if (button) {
+        const number = button.id.slice("deleteBtn".length);
+
+        document.getElementById("row" + number).remove();
+
+        applications = applications.filter(function (item) {
+            return item.id !== Number(number);
+        });
+
+        localStorage.setItem(storageKey, JSON.stringify(applications));
+    }
 });
+
+
+// Sort by status
 
 sortStatus.addEventListener("click", function () {
-  const rows = Array.from(addBody.rows);
+    applications = JSON.parse(localStorage.getItem(storageKey) || "[]");
 
-  rows.sort(function (a, b) {
-    const statusA = a.cells[4].textContent.trim();
-    const statusB = b.cells[4].textContent.trim();
+    applications.sort(function (a, b) {
+        return statusOrder[a.status1] - statusOrder[b.status1];
+    });
 
-    return statusOrder[statusA] - statusOrder[statusB];
-  });
+    localStorage.setItem(storageKey, JSON.stringify(applications));
 
-  addBody.append(...rows);
-  saveApplications();
+    render();
 });
+
+
+// Sort by date
 
 sortDate.addEventListener("click", function () {
-  const rows = Array.from(addBody.rows);
+    applications = JSON.parse(localStorage.getItem(storageKey) || "[]");
 
-  rows.sort(function (a, b) {
-    const dateA = a.cells[2].textContent.trim();
-    const dateB = b.cells[2].textContent.trim();
+    applications.sort(function (a, b) {
+        return b.date.localeCompare(a.date);
+    });
 
-    return dateB.localeCompare(dateA);
-  });
+    localStorage.setItem(storageKey, JSON.stringify(applications));
 
-  addBody.append(...rows);
-  saveApplications();
+    render();
 });
 
-const savedApplications = JSON.parse(localStorage.getItem(storageKey) || "[]");
 
-for (const application of savedApplications) {
-  addRow(application);
-  n = Math.max(n, application.id + 1);
-}
+render();
