@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Internship Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+    <h1>Internship tracker</h1>
+    </header>
+
+    <main>
+        
+    <section>
+    <h2>Please Add Applications</h2>
+    <form>
+        <p>
+            <lable for="company">Company:</lable>
+            <input type="text" id="company" name="company" placeholder="e.g. Google">
+        </p>
+        <p>
+            <lable for="position">Position:</lable>
+            <input type="text" id="position" name="position" placeholder="e.g. Software engineering">
+        </p>
+        <p>
+            <lable for="date">Date:</lable>
+            <input type="date" id="date" name="date">
+        </p>
+        <p>
+            <lable for="link">Link:</lable>
+            <input type="text" id="link" name="link" placeholder="https://">
+        </p>
+        <p>
+            <lable for="status">Status:</lable>
+            <select id="status" name="status">
+                <option>Applied</option>
+                <option>Interviewing</option>
+                <option>Offer</option>
+                <option>Rejected</option>
+          </select>
+        </p>
+        <button type="button" id="addApplication">Add</button>
+    </form>
+    </section>
+
+    <section>
+        <h2>My Applications</h2>
+        <button type="button" id="sortStatus">Sort by status</button>
+        <button type="button" id="sortDate">Sort by date</button>
+        <table border="1">
+            <tr>
+                <th>Company</th>
+                <th>Position</th>
+                <th>Date</th>
+                <th>Link</th>
+                <th>Status</th>
+            </tr>
+            
+            <tbody id="addBody">
+
+            </tbody>
+        </table>
+    </section>
+
+    <footer>
+    <p class="bless">Good luck!</p>
+    <img src="/Users/jun/Desktop/Todoapp/截屏2026-11-24 上午3.06.39.png" alt="goodluck!" width="300" height="200">
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

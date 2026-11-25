@@ -1,0 +1,74 @@
+
+h1{
+    font-weight: bold;
+}
+
+h2{ 
+    color: blue;
+}
+
+.bless{
+    color: red;
+    font-size: 24px;
+}
+
+section {
+  border: 2px dashed black;
+  padding: 20px 20px;
+  margin: 30px 30px 30px 30px;
+  background-color: #e3e4d6;
+  border-radius: 10px;
+  flex: 1;
+}
+
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    color: #333333;
+    line-height: 1.4;
+}
+
+
+button {
+  background-color: #5b6d3f;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 20px auto;
+  border: none;
+}
+
+th, td {
+  border: 1px solid #999;
+  padding: 10px 16px;
+}
+
+th {
+  background-color: #556b2f;
+  color: white;
+}
+
+input {
+  width: 260px;
+  padding: 6px;
+}
+
+select {
+  width: 272px;
+  padding: 6px;
+}
+
+td:last-child {
+  border: none;
+}
+
+
+th:last-child {
+  border: none;
+}
